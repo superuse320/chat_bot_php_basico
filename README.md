@@ -45,13 +45,6 @@ composer install
 2. Asegúrate de que Apache/Nginx y MySQL estén corriendo desde el panel de control de Laragon.
 3. Accede al proyecto desde tu navegador web en `http://localhost/tu_proyecto`.
 
-### 5. Ejecutar el Proyecto
-
-Una vez configurado el servidor web, ya puedes ejecutar el proyecto desde tu navegador. Asegúrate de que las migraciones y los seeders estén ejecutados si es necesario:
-
-```bash
-php artisan migrate --seed
-```
 
 ¡Listo! Ahora puedes disfrutar de tu proyecto.
 
