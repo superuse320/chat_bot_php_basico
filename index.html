@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT en PHP</title>
+    <script>
+        function enviarMensaje() {
+            var mensaje = document.getElementById("mensaje").value;
+            var resultado = document.getElementById("resultado");
+    
+            if (mensaje.trim() === "") {
+                resultado.innerHTML = "<p style='color:red;'>Escribe un mensaje primero.</p>";
+                return;
+            }
+    
+            console.log("Enviando mensaje:", mensaje); // Depuración
+    
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "chat.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+            xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+        console.log("Estado de la respuesta:", xhr.status);
+        console.log("Respuesta recibida:", xhr.responseText);
+
+        if (xhr.status === 200) {
+            try {
+                var jsonResponse = JSON.parse(xhr.responseText);
+                
+                if (jsonResponse.error) {
+                    // Acceder a la propiedad 'message' del objeto 'error'
+                    resultado.innerHTML = "<p style='color:red;'>Error: " + jsonResponse.error.message + "</p>";
+                } else if (jsonResponse.choices && jsonResponse.choices.length > 0) {
+                    resultado.innerHTML = "<p><strong>ChatGPT:</strong> " + jsonResponse.choices[0].message.content + "</p>";
+                } else {
+                    resultado.innerHTML = "<p style='color:red;'>Respuesta inesperada de OpenAI.</p>";
+                }
+            } catch (error) {
+                resultado.innerHTML = "<p style='color:red;'>Error al procesar la respuesta JSON.</p>";
+                console.error("Error de JSON:", error);
+            }
+        } else {
+            resultado.innerHTML = "<p style='color:red;'>Error en la solicitud al servidor (código " + xhr.status + ").</p>";
+        }
+    }
+};
+    
+            xhr.send("message=" + encodeURIComponent(mensaje));
+        }
+    </script>
+</head>
+<body>
+    <h2>Chat con ChatGPT en PHP</h2>
+    <input type="text" id="mensaje" placeholder="Escribe tu mensaje aquí">
+    <button onclick="enviarMensaje()">Enviar</button>
+    <div id="resultado"></div>
+</body>
+</html>
